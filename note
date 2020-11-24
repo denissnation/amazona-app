@@ -1,0 +1,9 @@
+install ESlint for Code Linting
+1.install VSCode esling extension
+2. npm install -D ESlint
+3. run ./node_modules/.bin/eslint --init
+4. Create ./frontend/.env
+5. Add SKIP_PREFLIGHT_CHECK=true
+
+npm install bcryptjs
+npm install express-async-handler (untuk mengirim error ke browser sehingga tidak loading terus menerus)
