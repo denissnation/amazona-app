@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { deliverOrder, detailsOrder, payOrder } from '../actions/orderAction'
 import LoadingBox from '../components/LoadingBox'
 import MessageBox from '../components/MessageBox'
-import { ORDER_DELIVER_RESET, ORDER_PAY_RESET } from '../constants/orderConstant'
+import { ORDER_CREATE_RESET, ORDER_DELIVER_RESET, ORDER_PAY_RESET } from '../constants/orderConstant'
 
 export default function OrderScreen(props) {
     const orderId = props.match.params.id
@@ -22,11 +22,16 @@ export default function OrderScreen(props) {
     const userSignin = useSelector(state => state.userSignin)
     const {userInfo} = userSignin
     
+    
     const orderDeliver = useSelector(state => state.orderDeliver)
     const {loading: loadingDeliver, success: successDeliver, error: errorDeliver} = orderDeliver
 
+
     const dispatch= useDispatch()
-    
+    if (!userInfo) {
+        dispatch({type: ORDER_CREATE_RESET})
+        props.history.push('/signin')
+    }
     useEffect(() => {
         const addPayPalScript = async () => {
             const {data} = await Axios.get('/api/config/paypal')
@@ -62,7 +67,7 @@ export default function OrderScreen(props) {
     const deliverHandler = () => {
         dispatch(deliverOrder(order._id))
     }
-
+    console.log(userInfo.isAdmin);
     return loading ? (
                 <LoadingBox></LoadingBox>) : error ? 
                 <MessageBox variant="danger">{error}</MessageBox> : 

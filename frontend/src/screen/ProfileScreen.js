@@ -9,6 +9,10 @@ export default function ProfileScreen() {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [sellerName, setSellerName] = useState('')
+    const [sellerLogo, setSellerLogo] = useState('')
+    const [sellerDescription, setSellerDescription] = useState('')
+
     const [confirmPassword, setConfirmPassword] = useState('')
     const userSignin = useSelector(state => state.userSignin)
     const {userInfo} = userSignin
@@ -25,6 +29,11 @@ export default function ProfileScreen() {
         }else{
             setName(user.name);
             setEmail(user.email);
+            if (user.seller) {
+                setSellerName(user.seller.name)
+                setSellerLogo(user.seller.logo)
+                setSellerDescription(user.seller.description)
+            }
         }
     }, [dispatch, userInfo._id, user])
 
@@ -34,7 +43,7 @@ export default function ProfileScreen() {
             alert('Password and Confirm Password Are Not Matched')
         }
         else{
-            dispatch(updateUserProfile({userId: user._id, name, email, password}))
+            dispatch(updateUserProfile({userId: user._id, name, email, password, sellerName, sellerLogo, sellerDescription}))
         }
         
     }
@@ -69,6 +78,24 @@ export default function ProfileScreen() {
                         <label htmlFor="confirmPassword">Concfirm Password</label>
                         <input id="confirmPassword " type="password" placeholder="Enter confirm password" onChange={(e) => setConfirmPassword(e.target.value)} />
                     </div>
+                    {user.isSeler && (
+                        <>
+                            <h2>Seller</h2>
+                            <div>
+                                <label htmlFor="sellerName">Seller Name</label>
+                                <input type="text" id="sellerName" placeholder="Enter Seller Name" value={sellerName} onChange={(e) => setSellerName(e.target.value)}/>
+                            </div>
+                            <div>
+                                <label htmlFor="sellerLogo">Seller Logo</label>
+                                <input type="text" id="sellerLogo" placeholder="Enter Seller Logo" value={sellerLogo} onChange={(e) => setSellerLogo(e.target.value)}/>
+                            </div>
+                            <div>
+                                <label htmlFor="sellerDescription">Seller Description</label>
+                                <input type="text" id="sellerDescription" placeholder="Enter Seller Description" value={sellerDescription} onChange={(e) => setSellerDescription(e.target.value)}/>
+                            </div>
+                            
+                        </>
+                    )}
                     <div>
                         <button type="submit" className="primary">Update</button>
                     </div>

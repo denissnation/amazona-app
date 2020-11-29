@@ -1,12 +1,12 @@
 import Axios from 'axios' 
-import { PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAIL_REQUEST, PRODUCT_DETAIL_SUCCESS, PRODUCT_DETAIL_FAIL, PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_FAIL, PRODUCT_CREATE_SUCCESS, PRODUCT_UPDATE_REQUEST, PRODUCT_UPDATE_SUCCESS, PRODUCT_UPDATE_FAIL, PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS } from '../constants/productConstants'
+import { PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL, PRODUCT_DETAIL_REQUEST, PRODUCT_DETAIL_SUCCESS, PRODUCT_DETAIL_FAIL, PRODUCT_CREATE_REQUEST, PRODUCT_CREATE_FAIL, PRODUCT_CREATE_SUCCESS, PRODUCT_UPDATE_REQUEST, PRODUCT_UPDATE_SUCCESS, PRODUCT_UPDATE_FAIL, PRODUCT_DELETE_REQUEST, PRODUCT_DELETE_SUCCESS, PRODUCT_LIST_CATEGORY_REQUEST, PRODUCT_LIST_CATEGORY_SUCCESS, PRODUCT_LIST_CATEGORY_FAIL } from '../constants/productConstants'
 
-export const listProducts = () => async(dispatch) => {
+export const listProducts = ({seller= '', name= '', category= '', min = 0, max = 0, rating = 0, order = ''}) => async(dispatch) => {
     dispatch({
         type: PRODUCT_LIST_REQUEST
     });
     try {
-        const {data} = await Axios.get('/api/product')
+        const {data} = await Axios.get(`/api/product?seller=${seller}&name=${name}&category=${category}&min=${min}&max=${max}&rating=${rating}&order=${order}`)
         dispatch({
             type: PRODUCT_LIST_SUCCESS,
             payload: data
@@ -15,6 +15,24 @@ export const listProducts = () => async(dispatch) => {
     } catch (error) {
         dispatch({
             type: PRODUCT_LIST_FAIL,
+            payload: error.message
+        })
+    }
+}
+export const listProductsCategories = () => async(dispatch) => {
+    dispatch({
+        type: PRODUCT_LIST_CATEGORY_REQUEST
+    });
+    try {
+        const {data} = await Axios.get(`/api/product/categories`)
+        dispatch({
+            type: PRODUCT_LIST_CATEGORY_SUCCESS,
+            payload: data
+        })
+        
+    } catch (error) {
+        dispatch({
+            type: PRODUCT_LIST_CATEGORY_FAIL,
             payload: error.message
         })
     }

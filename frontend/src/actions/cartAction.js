@@ -1,20 +1,26 @@
 import Axios from "axios"
-import { CART_ADD_ITEM, CART_REMOVE_ITEM, CART_SAVE_PAYMENT_METHOD, CART_SAVE_SHIPPING_ADDRESS } from "../constants/cartConstant"
+import { CART_ADD_ITEM, CART_REMOVE_ITEM, CART_SAVE_PAYMENT_METHOD, CART_SAVE_SHIPPING_ADDRESS, CART_ADD_ITEM_FAIL } from "../constants/cartConstant"
 
 export const addToCart = (productId, qty) => async (dispatch, getState) => {
     const {data} = await Axios.get(`/api/product/${productId}`)
-    dispatch({
-        type: CART_ADD_ITEM,
-        payload: {
-            name: data.name,
-            image: data.image,
-            price: data.price,
-            product: data._id,
-            countInStock: data.countInStock,
-            qty
-        }
-    })
-    localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems))
+    const {cart: {cartItems}} = getState()
+    if (cartItems.length > 0 && data.seller._id !== cartItems[0].seller._id) {
+        dispatch({type: CART_ADD_ITEM_FAIL, payload: `Cant Add to Cart. Buy only from ${cartItems[0].seller.seller.name} in this order`})        
+    }else{
+        dispatch({
+            type: CART_ADD_ITEM,
+            payload: {
+                name: data.name,
+                image: data.image,
+                price: data.price,
+                product: data._id,
+                countInStock: data.countInStock,
+                seller: data.seller,
+                qty
+            }
+        })
+        localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems))
+    }
 }
 
 export const removeFromCart = (productId) => async(dispatch, getState) => {
