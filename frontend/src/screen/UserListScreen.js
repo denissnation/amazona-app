@@ -11,6 +11,7 @@ export default function UserListScreen(props) {
     const userDelete = useSelector(state => state.userDelete)
     const {loading: loadingDelete, error:errorDelete, success: successDelete} = userDelete
     const dispatch = useDispatch()
+    
     useEffect(() => {
         dispatch(listUser())
         dispatch({type: USER_DELETE_RESET})
